@@ -50,9 +50,17 @@ MoEventEmitter来源于Github的EventEmitter开源项目,仅用于MatchOn API. �
 
 ### 直接在网页中加载
 
+***原JavaScript脚本***
 ```
-<script src="http://"></script>
-<script src="http://"></script>
+<script src="https://matchon.cn/libs/MoEventEmitter.js"></script>
+<script src="https://d.matchon.cn/libs/matchon-core.js"></script>
+```
+
+***最小化的JavaScript脚本***
+```
+<script src="http://d.matchon.cn/libs/MoEventEmitter.min.1.1.3.js"></script>
+<script src="http://d.matchon.cn/libs/matchon-core.min.1.0.0.js"></script>
+
 ```
 
 ### 通过NPM
@@ -65,7 +73,16 @@ npm install MatchOnCore --save
 
 ## 复制
 
-您可以直接使用git clone命令复制这个仓库.
+您可以通过Git Clone命令,将这两个库复制到本机上.
+
+***Github***
 ```
 git clone git://github.com/matchon-on/MoEventEmitter.git
+git clone git://github.com/matchon-on/MatchOn.git
+```
+
+***码云***
+```
+git clone git://git.oschina.net/matchon/MoEventEmitter.git
+git clone git://git.oschina.net/matchon/MatchOn.git
 ```
