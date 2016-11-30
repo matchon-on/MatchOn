@@ -53,13 +53,13 @@ MoEventEmitter来源于Github的EventEmitter开源项目,仅用于MatchOn API. �
 ***原JavaScript脚本***
 ```
 <script src="https://matchon.cn/libs/MoEventEmitter.js"></script>
-<script src="https://d.matchon.cn/libs/matchon-core.js"></script>
+<script src="https://matchon.cn/libs/matchon-core.js"></script>
 ```
 
 ***最小化的JavaScript脚本***
 ```
-<script src="http://d.matchon.cn/libs/MoEventEmitter.min.1.1.3.js"></script>
-<script src="http://d.matchon.cn/libs/matchon-core.min.1.0.0.js"></script>
+<script src="https://matchon.cn/libs/MoEventEmitter.min.1.1.3.js"></script>
+<script src="https://matchon.cn/libs/matchon-core.min.1.0.0.js"></script>
 
 ```
 
