@@ -20,15 +20,17 @@
 
 进入[麦琪(MatchOn)](http://matchon.cn)官网了解详细信息.
 
-## 反馈途径
+## 反馈
 
 欢迎开发者通过Github或者码云提交Issue, 提出您的问题,或者发现的Bug,我们将在第一时间跟进予以解答.
 
-## MoEventEmitter
+## 消息引擎 MoEventEmitter
 
 麦琪JavaScript API采用了与Nodejs的消息模式兼容的异步消息驱动的设计,通过继承一个MoEventEmitter对象,获得发布,订阅和取消消息订阅的API.
 
-MoEventEmitter也托管在[Github](https://github.com/matchon-on/MoEventEmitter)和[码云](https://git.oschina.net/matchon/MatchOn)上.
+MatchOn对象继承了MoEventEmitter. 您可以在MatchOn对象上调用所有MoEventEmitter的消息函数,不需要另外再继承或创建MoEventEmitter对象.
+
+MoEventEmitter也托管在[Github](https://github.com/matchon-on/MoEventEmitter)和[码云](https://git.oschina.net/matchon/MoEventEmitter)上.
 
 MoEventEmitter来源于Github的EventEmitter开源项目,仅用于MatchOn API. 尽管MoEventEmitter也可以作为通用的JavaScript消息库, 我们建议您使用EventEmitter作为通用目的的JavaScript消息引擎. 这是EventEmitter在[Github的链接](https://github.com/Olical/EventEmitter.git)
 
@@ -38,13 +40,11 @@ MoEventEmitter来源于Github的EventEmitter开源项目,仅用于MatchOn API. �
 
 ## 文档
 
-请参考麦琪(MatchOn)[开发者文档](http://matchon.cn/docs.html)
+请参考麦琪(MatchOn)[开发者文档](http://matchon.cn/doc.html)
 
 ## 最小化
 
-您可以直接从这个仓库里获取已经最小化的JavaScript文件.如果您复制了源代码库,也可使用`tools/dist.sh`编译.
-
-
+您可以直接从这个仓库里获取已经最小化的JavaScript文件.如果您复制了源代码库,也可已在项目目录下使用`tools/dist.sh`编译.
 
 ## 麦琪API安装
 
