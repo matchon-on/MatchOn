@@ -64,8 +64,8 @@ MoEventEmitter来源于Github的EventEmitter开源项目,仅用于MatchOn API. �
 ### 通过NPM
 
 ```
-npm install MoEventEmitter --save
-npm install MatchOnCore --save
+npm install moeventemitter --save
+npm install matchon-core --save
 
 ```
 
