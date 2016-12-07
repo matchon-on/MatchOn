@@ -66,8 +66,8 @@
             throw new Error("Parameter Error");
 
 
-        this.options.matchingServer = this.options.matchingServer || "https://test.matchon.cn:9191";
-        this.options.messagingServer = this.options.messagingServer || "https://test.matchon.cn:9292";
+        this.options.matchingServer = this.options.matchingServer || "https://mch.matchon.cn:9191";
+        this.options.messagingServer = this.options.messagingServer || "https://msg.matchon.cn:9292";
         this.options.timeout = this.options.timeout || 60;
 
         if( typeof this.options.gameID !== "string" ||
