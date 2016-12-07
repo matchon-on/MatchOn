@@ -1,7 +1,5 @@
 # 麦琪JavaScript API
 
-## 说明
-
 麦琪JavaScript API由[画笔(上海)网络科技有限公司](http://matchon.cn)开发,用于Web/H5/React Native等通过Web标准协议和JavaScript语言获取麦琪云对战服务.
 
 麦琪API采用开源的MIT协议.代码托管在[Github](https://github.com/matchon-on/MatchOn)和[码云](https://git.oschina.net/matchon/MatchOn)上.
@@ -50,13 +48,13 @@ MoEventEmitter来源于Github的EventEmitter开源项目,仅用于MatchOn API. �
 
 ### 直接在网页中加载
 
-***原JavaScript脚本***
+***含注释的完整JavaScript***
 ```
 <script src="https://matchon.cn/libs/MoEventEmitter.js"></script>
 <script src="https://matchon.cn/libs/matchon-core.js"></script>
 ```
 
-***最小化的JavaScript脚本***
+***最小化的JavaScript***
 ```
 <script src="https://matchon.cn/libs/MoEventEmitter.min.1.1.3.js"></script>
 <script src="https://matchon.cn/libs/matchon-core.min.1.0.0.js"></script>

@@ -66,8 +66,8 @@
             throw new Error("Parameter Error");
 
 
-        this.options.matchingServer = this.options.matchingServer || "https://mch.matchon.cn:9191";
-        this.options.messagingServer = this.options.messagingServer || "https://msg.matchon.cn:9292";
+        this.options.matchingServer = this.options.matchingServer || "https://test.matchon.cn:9191";
+        this.options.messagingServer = this.options.messagingServer || "https://test.matchon.cn:9292";
         this.options.timeout = this.options.timeout || 60;
 
         if( typeof this.options.gameID !== "string" ||
@@ -142,6 +142,7 @@
         request.onreadystatechange = function (e) {
             if (request.readyState === 4) {
 
+                console.log(request.status);
                 switch ( request.status ) {
                 case 308: //后端服务器已切换，尝试连接另一服务器
                     clearTimeout(retryHandler);
@@ -311,7 +312,7 @@
      * @desc 初始化成功
      * @type {Object}
      * @property {Object} feedback 调用函数时传入的回调对象
-     *
+     * 
      */
 
     /**
@@ -346,7 +347,6 @@
 
     /**
      * @typedef {Object} matchMember
-     * @memberof MatchOn
      * @property {string} gameID 本游戏的ID
      * @property {string} playerID 玩家的ID
      * @property {string} requestID 玩家的原始匹配请求ID
@@ -456,10 +456,21 @@
 
 
     /**
-     * 建立Socket连接
+     * <p> 建立Socket连接: </p>
+     * <p> MatchOn支持两种建立连接的方式:</p>
+     * <ul> 
+     *   <li> 玩家模式: 以玩家身份建立连接, 将接收所有游戏消息,发送的消息也会被发送到其他玩家和订阅者 </li>
+     *   <li> 订阅模式: 以订阅者身份建立连接,将会接收所有游戏消息, 发送的消息将作为心跳消息,不发给其他游戏玩家 </li>
+     * </ul>
+     * <p> 无论以哪种模式连接, 玩家需要不定时发送心跳消息, 以保存连接 </p>
      * @param {Object} para 建立socket参数
      * @param {string} para.playerID 游戏玩家编号
      * @param {string} para.matchID 对战编号
+     * @param {string} para.connectionType 连接类型
+     * <ul>
+     *  <li> p: 玩家连接, 接收消息,发送的消息被发送到其他玩家 </li>
+     *  <li> s: 订阅连接, 接收消息,发送的消息作为心跳消息, 不发送给其他玩家</li>
+     * </ul>
      * @param {Object} feedback 建立Socket连接相应事件中返回，由用户自行设置
      * @return {int} 请求提交状态
      *   <ul> 
@@ -476,12 +487,14 @@
     MatchOn.prototype.openSocket = function(para, feedback) {
         if( !para ||
             !para.playerID ||
-            !para.matchID)
-            return -1;
+            !para.matchID )
 
+            return -1;
+        
         var that = this;
 
         var retryHandler = undefined;
+        var connectionType = para.connectionType || "/p";
         
         if( that.currentSocket && that.currentSocket.readyState === 1)
             return 1;
@@ -506,7 +519,7 @@
 
                     that.currentMessagingServer = JSON.parse(request.responseText).server;
 
-                    var connectionString = "wss://" + that.currentMessagingServer.trim().slice(8) + "/websocket/" + that.options.gameID + "/" + para.playerID + "/" + para.matchID + "/" + that.options.secrete;
+                    var connectionString = "wss://" + that.currentMessagingServer.trim().slice(8) + "/websocket/" + that.options.gameID + "/" + para.playerID + "/" + para.matchID + "/" + that.options.secrete + connectionType;
 
                     var ws = new WebSocket(connectionString);
                     ws.onopen = function (e) {
@@ -606,7 +619,6 @@
         request.ontimeout = function (e) {
 
 
-
             window.clearTimeout(retryHandler);
 
             if( Date.now() - startTime >  that.options.timeout * 1000)
@@ -696,8 +708,34 @@
     };
 
     /**
+     * 获得Socket的当前状态
+     * @return {int} 重新连接提交状态 
+     * <ul>
+     *  <li> -1 : 未创建Socket </li>
+     *  <li> 0 : 连接尚未建立 </li>
+     *  <li> 1 : 连接已建立,状态正常 </li>
+     *  <li> 2 : 连接正在关闭中 </li>
+     *  <li> 3 : 连接已关闭 </li>
+     * </ul>
+     * @memberof MatchOn
+     */
+
+    MatchOn.prototype.getSocketState = function () {
+
+        if(!this.currentSocket)
+            return -1;
+
+        return this.currentSocket.readyState;
+
+    };
+
+    /**
      * 断开Socket连接
-     * @return {int} -1: socket不存在, 0: 断开连接
+     * @return {int} 断开连接的处理结果
+     * <ul>
+     *  <li> -1 : 未创建Socket </li>
+     *  <li> 0 : 断开连接 </li>
+     * </ul>
      * @memberof MatchOn
      */
 
@@ -965,8 +1003,8 @@
      *  <li>  0 : 请求提交到后端 </li>
      * </ul>
      * @memberof MatchOn
-     * @emits setActiveSucceeded
-     * @emits setActiveError
+     * @emits MatchOn#setActiveSucceeded
+     * @emits MatchOn#setActiveError
      */
 
     MatchOn.prototype.setActive = function(para, feedback) {
@@ -992,7 +1030,7 @@
      */
 
     /**
-     * @event MatchOn#setActiveError
+     * @event MatchOn#setInActiveError
      * @desc 设置非活动状态失败
      * @type {Object}
      * @property {int} code 错误代码
@@ -1013,8 +1051,8 @@
      *  <li>  0 : 请求提交到后端 </li>
      * </ul>
      * @memberof MatchOn
-     * @emits setInActiveSucceeded
-     * @emits setInActiveError
+     * @emits MatchOn#setInActiveSucceeded
+     * @emits MatchOn#setInActiveError
      */
 
     MatchOn.prototype.setInActive = function(para, feedback) {
@@ -1066,8 +1104,8 @@
      *  <li>  0 : 请求提交到后端 </li>
      * </ul>
      * @memberof MatchOn
-     * @emits playerLastMessageSucceeded
-     * @emits playerLastMessageError
+     * @emits MatchOn#playerLastMessageSucceeded
+     * @emits MatchOn#playerLastMessageError
      *
      */
 
@@ -1116,8 +1154,8 @@
      *  <li>  0 : 请求提交到后端 </li>
      * </ul>
      * @memberof MatchOn
-     * @emits playerLastMatchSucceeded
-     * @emits playerLastMatchError
+     * @emits MatchOn#playerLastMatchSucceeded
+     * @emits MatchOn#playerLastMatchError
      */
 
     MatchOn.prototype.playerLastMatch = function (para,feedback) {
@@ -1175,8 +1213,8 @@
      *  <li>  0 : 请求提交到后端 </li>
      * </ul>
      * @memberof MatchOn
-     * @emits setKVSucceeded
-     * @emits setKVError
+     * @emits MatchOn#setKVSucceeded
+     * @emits MatchOn#setKVError
      */
 
     MatchOn.prototype.setKV = function (para,feedback) {
@@ -1273,8 +1311,8 @@
      *  <li>  0 : 请求提交到后端 </li>
      * </ul>
      * @memberof MatchOn
-     * @emits getKVSucceeded
-     * @emits getKVError
+     * @emits MatchOn#getKVSucceeded
+     * @emits MatchOn#getKVError
      */
 
     MatchOn.prototype.getKV = function (para, feedback) {
@@ -1323,17 +1361,16 @@
     };
 
     /**
-     * @event MatchOn#getKVSucceeded
-     * @desc 获取键值对成功
+     * @event MatchOn#deleteKVSucceeded
+     * @desc 删除键值成功
      * @type {Object}
-     * @property {Object} data 键/值对数据对象
      * @property {Object} feedback 调用函数时传入的回调对象
      * @property {Object} para 调用新匹配时的参数
      */
 
     /**
-     * @event MatchOn#getKVError
-     * @desc 获取键值对失败
+     * @event MatchOn#deleteKVError
+     * @desc 删除键值失败
      * @type {Object}
      * @property {int} code 错误代码
      * @property {Object} feedback 调用函数时传入的回调对象
@@ -1399,7 +1436,7 @@
     };
 
     /**
-     * @event MatchOn#checkKVSucceeded
+     * @event MatchOn#checkKVLockSucceeded
      * @desc 未加锁
      * @type {Object}
      * @property {Object} feedback 调用函数时传入的回调对象
@@ -1407,7 +1444,7 @@
      */
 
     /**
-     * @event MatchOn#checkKVError
+     * @event MatchOn#checkKVLockError
      * @desc 检查键值加锁失败
      * @type {Object}
      * @property {int} code 错误代码,如果值为570,代表已上锁,其他值代表错误,见错误代码表
@@ -1486,7 +1523,7 @@
      */
 
     /**
-     * @event MatchOn#unlockVError
+     * @event MatchOn#unlockKVError
      * @desc 解锁键值对失败
      * @type {Object}
      * @property {int} code 错误代码
