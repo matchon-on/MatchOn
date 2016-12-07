@@ -142,7 +142,6 @@
         request.onreadystatechange = function (e) {
             if (request.readyState === 4) {
 
-                console.log(request.status);
                 switch ( request.status ) {
                 case 308: //后端服务器已切换，尝试连接另一服务器
                     clearTimeout(retryHandler);
